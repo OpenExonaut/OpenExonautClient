@@ -30,4 +30,6 @@ resources/app/files/rankurl.txt
 node_modules/
 dist/
 UnityBugReporter.exe
+UnityWebPlayerUpdate.exe
 *.min.*
+.github/workflows/build.yml

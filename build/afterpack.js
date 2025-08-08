@@ -7,7 +7,7 @@ exports.default = function() {
   if (os.platform() === 'win32') {
     const defaultDir = './dist/win-ia32-unpacked/resources/default_app'
     const macWebPlayer = './dist/win-ia32-unpacked/utils/Unity Web Player.plugin'
-    const exeFile = './dist/win-ia32-unpacked/OpenATBPClient.exe'
+    const exeFile = './dist/win-ia32-unpacked/OpenExonautClient.exe'
 
     // remove leftover files from default electron app
     fs.rm(defaultDir, { recursive: true }, (err) => {
@@ -39,8 +39,8 @@ exports.default = function() {
     });
   }
   if (os.platform() === 'darwin') {
-    const winWebPlayer = './dist/mac/OpenATBPClient.app/Contents/utils/UnityWebPlayer.exe'
-    fs.rm(winWebPlayer, (err) => {
+    const winWebPlayer = './dist/mac/OpenExonautClient.app/Contents/utils/Unity Web Player.windows'
+    fs.rm(winWebPlayer, { recursive: true }, (err) => {
       if (err) {
           throw err;
       }

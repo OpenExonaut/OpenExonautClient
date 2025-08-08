@@ -45,12 +45,12 @@ jobs:
       run: brew install create-dmg
     - name: Create .dmg file
       run: |
-        create-dmg --volname OpenATBP \
+        create-dmg --volname OpenExonaut \
         --window-pos 200 120 --window-size 660 400 \
-        --icon-size 100 --icon OpenATBPClient.app 160 100 \
+        --icon-size 100 --icon OpenExonautClient.app 160 100 \
         --app-drop-link 500 100 \
         --add-file "MacOS Instructions.rtf" "build/MacOS Instructions.rtf" 330 260 \
-        --background build/dmg_bg.png dist/OpenATBPClient.dmg dist/mac
+        --background build/dmg_bg.png dist/OpenExonautClient.dmg dist/mac
     - name: Upload Artifacts
       uses: actions/upload-artifact@master
       with:

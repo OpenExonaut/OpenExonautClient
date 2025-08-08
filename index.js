@@ -3,14 +3,24 @@ var fs = require("fs-extra");
 var os = require("os");
 var dialog = require("dialog");
 var BrowserWindow = require("browser-window");
+var child_process = require("child_process");
+var path = require("path");
 
 var mainWindow = null;
 var initialPageLoad = false;
 
-app.commandLine.appendSwitch("--enable-npapi");
+var utilsdir = path.join(__dirname, "..", "..", "utils");
+
+// if running in non-packaged / development mode, this dir will be slightly different
+if (process.env.npm_node_execpath) {
+    utilsdir = path.join(__dirname, "build", "utils");
+}
+
+app.commandLine.appendSwitch("enable-npapi");
+process.env.UNITY_DISABLE_PLUGIN_UPDATES = "yes";
 
 if (process.platform == "darwin") {
-    var full_osx_version = require("child_process")
+    var full_osx_version = child_process
         .execSync("sw_vers -productVersion")
         .toString()
         .trim()
@@ -20,76 +30,20 @@ if (process.platform == "darwin") {
             ? Number(full_osx_version[1])
             : Number(full_osx_version[0]) + 5; // + 5 to cause Big Sur and up to follow Catalina as they should instead of overlapping El Capitan
     if (osx_release < 12) {
-        app.commandLine.appendSwitch("--ignore-certificate-errors");
+        app.commandLine.appendSwitch("ignore-certificate-errors");
     }
-}
-
-var utilsdir = __dirname + "/../../utils";
-
-// if running in non-packaged / development mode, this dir will be slightly different
-if (process.env.npm_node_execpath) {
-    utilsdir = __dirname + "/build/utils";
-}
-
-function verifyUnity() {
-    if (os.platform() === "darwin") {
-        return true;
-    }
-    var dllpath =
-        app.getPath("appData") +
-        "/../LocalLow/Unity/WebPlayer/player/3.x.x/webplayer_win.dll";
-
-    if (fs.existsSync(dllpath)) {
-        var buff = fs.readFileSync(dllpath);
-        var hash = require("crypto")
-            .createHash("md5")
-            .update(buff)
-            .digest("hex");
-        if (hash == "33ffd00503b206260b0c273baf7e122e") {
-            return true;
-        }
-    }
-    return false;
-}
-
-function installUnity(callback) {
-    if (os.platform() === "darwin") {
-        callback();
-        return;
-    }
-
-    // run the installer silently
-    var child = require("child_process").spawn(
-        utilsdir + "/UnityWebPlayer.exe",
-        ["/quiet", "/S"]
+} else if (process.platform == "win32") {
+    var unityDir = path.join(utilsdir, "Unity Web Player.windows");
+    // npUnity3D32.dll was modified to point to HKCU\Software\OpenExonaut\OEC to look for Web Player instead of HKCU\Software\Unity\WebPlayer
+    child_process.execSync(
+        'reg add HKCU\\Software\\OpenExonaut\\OEC /f /v Directory /t REG_SZ /d "' +
+            unityDir +
+            '"'
     );
-    child.on("exit", function () {
-        console.log("Unity Web Player installed successfully.");
-        callback();
-    });
-}
-
-function initialSetup(firstTime) {
-    // Display a small window to inform the user that the app is working
-    setupWindow = new BrowserWindow({
-        width: 275,
-        height: 450,
-        resizable: false,
-        center: true,
-        frame: false,
-    });
-    setupWindow.loadUrl("file://" + __dirname + "/initialsetup.html");
-    installUnity(function () {
-        if (firstTime) {
-            // Copy default config
-            fs.copySync(
-                __dirname + "/defaults/config.json",
-                app.getPath("userData") + "/config.json"
-            );
-        }
-        setupWindow.destroy();
-        showMainWindow();
-    });
+    app.commandLine.appendSwitch(
+        "load-plugin",
+        path.join(unityDir, "loader", "npUnity3D32.dll")
+    );
 }
 
 function zipCheck() {
@@ -108,16 +62,15 @@ app.on("ready", function () {
     // Check just in case the user forgot to extract the zip.
     if (zipCheck()) {
         errormsg =
-            "It has been detected that OpenATBPClient is running from the TEMP folder.\n\n" +
-            "Please extract the entire Client folder to a location of your choice before starting OpenATBPClient.";
+            "It has been detected that OpenExonautClient is running from the TEMP folder.\n\n" +
+            "Please extract the entire Client folder to a location of your choice before starting OpenExonautClient.";
         dialog.showErrorBox("Error!", errormsg);
         return;
     }
 
-    var prefs = { 'plugins': true };
+    var prefs = { plugins: true };
 
-    if (os.platform() == "darwin") 
-        prefs['extra-plugin-dirs'] = [utilsdir];
+    if (os.platform() == "darwin") prefs["extra-plugin-dirs"] = [utilsdir];
 
     // Create the browser window.
     mainWindow = new BrowserWindow({
@@ -129,18 +82,17 @@ app.on("ready", function () {
     mainWindow.setMinimumSize(640, 480);
 
     // Check for first run
-    var configPath = app.getPath("userData") + "/config.json";
+    var configPath = path.join(app.getPath("userData"), "config.json");
     try {
         if (!fs.existsSync(configPath)) {
-            console.log("Config file not found. Running initial setup.");
-            initialSetup(true);
-        } else {
-            if (verifyUnity()) {
-                showMainWindow();
-            } else {
-                installUnity(showMainWindow);
-            }
+            console.log("Config file not found. Copying the default.");
+            // Copy default config
+            fs.copySync(
+                path.join(__dirname, "defaults", "config.json"),
+                path.join(app.getPath("userData"), "config.json")
+            );
         }
+        showMainWindow();
     } catch (ex) {
         dialog.showErrorBox(
             "Error!",
@@ -155,7 +107,7 @@ app.on("ready", function () {
 });
 
 function showMainWindow() {
-    var configPath = app.getPath("userData") + "/config.json";
+    var configPath = path.join(app.getPath("userData"), "config.json");
     var config = fs.readJsonSync(configPath);
 
     console.log("Game URL:", config["game-url"]);
@@ -179,7 +131,7 @@ function showMainWindow() {
 
     mainWindow.webContents.on("will-navigate", function (evt, url) {
         evt.preventDefault();
-        var configPath = app.getPath("userData") + "/config.json";
+        var configPath = path.join(app.getPath("userData"), "config.json");
         var config = fs.readJsonSync(configPath);
 
         if (!url.startsWith(config["game-url"])) {
