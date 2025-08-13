@@ -1,3 +1,123 @@
+const { classes: Cc, interfaces: Ci, results: Cr, utils: Cu } = Components;
+
+const { Services } = Cu.import("resource://gre/modules/Services.jsm");
+const { OS } = Cu.import("resource://gre/modules/osfile.jsm");
+
+const GAME_URL = "http://192.168.207.1/";
+
+const WINDOW_FEATURES = [
+    "chrome",
+    "dialog=no",
+    "all",
+    "width=900",
+    "height=658",
+].join(",");
+
+Cc["@mozilla.org/process/environment;1"]
+    .getService(Ci.nsIEnvironment)
+    .set("UNITY_DISABLE_PLUGIN_UPDATES", "yes");
+if (Services.appinfo.OS === "WINNT") {
+    let unityPathKey = Cc["@mozilla.org/windows-registry-key;1"].createInstance(
+        Ci.nsIWindowsRegKey
+    );
+    unityPathKey.create(
+        Ci.nsIWindowsRegKey.ROOT_KEY_CURRENT_USER,
+        "SOFTWARE\\OpenExonaut\\OEC",
+        Ci.nsIWindowsRegKey.ACCESS_ALL
+    );
+    unityPathKey.writeStringValue(
+        "Directory",
+        OS.Path.join(Services.dirsvc.get("GreD", Ci.nsIFile).path, "plugins")
+    );
+    unityPathKey.close();
+}
+
+// FIXME: the game being clicked on in windowed mode blanks it
+
+const browserWindow = Services.ww.openWindow(
+    null,
+    GAME_URL,
+    "_blank",
+    WINDOW_FEATURES,
+    null
+);
+
+/*
+// this breaks after the first time opening and closing the browser. just use the above constants.
+// this tool to pop up a prompt will probably be useful:
+// Services.ww.getNewPrompter(null).alert("Hey!", "put a string here");
+
+const { classes: Cc, interfaces: Ci, results: Cr, utils: Cu } = Components;
+
+const { Services } = Cu.import('resource://gre/modules/Services.jsm');
+const { OS } = Cu.import("resource://gre/modules/osfile.jsm");
+const { FileUtils } = Cu.import("resource://gre/modules/FileUtils.jsm");
+
+const oecRoaming = OS.Path.normalize(OS.Path.join(OS.Constants.Path.userApplicationDataDir, ".."));
+const oecAppData = OS.Path.join(oecRoaming, "OpenExonautClient");
+const oecConfig = OS.Path.join(oecAppData, "config.json");
+
+const WINDOW_FEATURES = [
+  'chrome',
+  'dialog=no',
+  'all',
+  'width=900',
+  'height=658',
+].join(',');
+
+const getGameUrl = () => {
+    const FileInputStream = Components.Constructor("@mozilla.org/network/file-input-stream;1", "nsIFileInputStream", "init");
+    let inputStream = undefined;
+    let url = undefined;
+    try {
+        inputStream = new FileInputStream(new FileUtils.File(oecConfig), FileUtils.MODE_RDONLY, FileUtils.PERMS_FILE, 0);
+        url = Cc["@mozilla.org/dom/json;1"].createInstance(Ci.nsIJSON).decodeFromStream(inputStream, inputStream.available())["game-url"];
+    } finally {
+        if (inputStream) {
+            inputStream.close();
+        }
+    }
+    return url;
+};
+
+const openWindow = () => {
+    // On startup, activate ourselves, since starting up from Node doesn't do this.
+    // TODO: do this by default for all apps started via Node.
+    if (Services.appinfo.OS === 'Darwin') {
+        Cc['@mozilla.org/widget/macdocksupport;1'].getService(Ci.nsIMacDockSupport).activateApplication(true);
+    }
+
+    window = Services.ww.openWindow(null, getGameUrl(), '_blank', WINDOW_FEATURES, null);
+}
+
+const ensureConfig = () => {
+    OS.File.makeDir(oecAppData, { from: oecRoaming }).then(() => {
+        OS.File.exists(oecConfig).then((fileExists) => {
+            if (!fileExists) {
+                OS.File.copy(OS.Path.join(OS.Path.join(oecResources.path, "webapp"), "defaults", "config.json"), oecConfig).then(() => {
+                    openWindow();
+                });
+            } else {
+                openWindow();
+            }
+        });
+    });
+}
+
+Cc["@mozilla.org/process/environment;1"].getService(Ci.nsIEnvironment).set("UNITY_DISABLE_PLUGIN_UPDATES", "yes");
+if (Services.appinfo.OS === 'WINNT') {
+    let unityPathKey = Cc["@mozilla.org/windows-registry-key;1"].createInstance(Ci.nsIWindowsRegKey);
+    unityPathKey.create(Ci.nsIWindowsRegKey.ROOT_KEY_CURRENT_USER, "SOFTWARE\\OpenExonaut\\OEC", Ci.nsIWindowsRegKey.ACCESS_ALL);
+    unityPathKey.writeStringValue("Directory", OS.Path.join(oecResources.path, "plugins"));
+    unityPathKey.close();
+}
+
+ensureConfig();
+*/
+
+/*
+// and this is the old Electron code
+
 var app = require("app"); // Module to control application life.
 var fs = require("fs-extra");
 var os = require("os");
@@ -153,3 +273,4 @@ function showMainWindow() {
         }
     });
 }
+*/

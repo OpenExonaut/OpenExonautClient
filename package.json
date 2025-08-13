@@ -4,79 +4,22 @@
     "description": "OpenExonautClient",
     "main": "index.js",
     "scripts": {
-        "start": "electron .",
-        "pack-win": "electron-builder --win --ia32 --dir",
-        "dist-win": "electron-builder --win --ia32 --publish=never",
-        "pack-mac": "electron-builder --mac --x64 --dir",
-        "dist-mac": "electron-builder --mac --x64 --publish=never",
+        "start-win": "node prepbuild.js win && npx qbrt run OpenExonautClient",
+        "start-mac": "node prepbuild.js mac && npx qbrt run OpenExonautClient",
+        "pack-win": "node prepbuild.js win && npx qbrt package OpenExonautClient && node postbuild.js win",
+        "dist-win": "node prepbuild.js win && npx qbrt package OpenExonautClient && node postbuild.js win",
+        "pack-mac": "node prepbuild.js mac && npx qbrt package OpenExonautClient && node postbuild.js mac",
+        "dist-mac": "node prepbuild.js mac && npx qbrt package OpenExonautClient && node postbuild.js mac",
         "prettier": "npx prettier --write ."
     },
     "author": "OpenExonaut Contributors",
     "license": "MIT",
     "devDependencies": {
-        "electron-builder": "^22.14.13",
-        "electron-prebuilt": "git+https://github.com/OpenExonaut/electron-prebuilt.git",
+        "qbrt": "git+https://github.com/OpenExonaut/qbrt.git",
         "prettier": "^2.7.1"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/OpenExonaut/OpenExonautClient"
-    },
-    "build": {
-        "appId": "xyz.openexonaut.client",
-        "productName": "OpenExonautClient",
-        "copyright": "© 2020-2023 OpenFusion Contributors, © 2024-2025 OpenATBP Contributors, © 2025 OpenExonaut Contributors",
-        "electronDownload": {
-            "version": "0.28.3"
-        },
-        "electronVersion": "0.28.3",
-        "win": {
-            "asar": false,
-            "target": [
-                {
-                    "target": "nsis",
-                    "arch": "ia32"
-                },
-                {
-                    "target": "zip",
-                    "arch": "ia32"
-                }
-            ]
-        },
-        "mac": {
-            "asar": false,
-            "target": [
-                {
-                    "target": "dmg",
-                    "arch": "x64"
-                }
-            ]
-        },
-        "nsis": {
-            "createDesktopShortcut": true,
-            "createStartMenuShortcut": true
-        },
-        "files": [
-            "!patches${/*}",
-            "!.vscode${/*}",
-            "!*.php",
-            "!rankurl.txt",
-            "!README.md",
-            "!LICENSE.md",
-            "!.npmrc",
-            "!.prettierrc",
-            "!.prettierignore"
-        ],
-        "extraFiles": [
-            "LICENSE.md",
-            {
-                "from": "build/utils",
-                "to": "utils"
-            }
-        ],
-        "afterPack": "./build/afterpack.js"
-    },
-    "dependencies": {
-        "fs-extra": "2.0.0"
     }
 }

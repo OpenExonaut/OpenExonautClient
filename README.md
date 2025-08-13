@@ -1,6 +1,6 @@
 # OpenExonautClient
 
-Electron app for easily playing Battle Party. Forked from [OpenATBPClient](https://github.com/OpenATBP/OpenATBPClient), in turn forked from [OpenFusionClient](https://github.com/OpenFusionProject/OpenFusionClient).
+qbrt app for easily playing Project Exonaut. Forked from [OpenATBPClient](https://github.com/OpenATBP/OpenATBPClient), in turn forked from [OpenFusionClient](https://github.com/OpenFusionProject/OpenFusionClient).
 
 ## Download
 

@@ -33,3 +33,4 @@ UnityBugReporter.exe
 UnityWebPlayerUpdate.exe
 *.min.*
 .github/workflows/build.yml
+OpenExonautClient/
