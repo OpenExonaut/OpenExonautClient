@@ -1,0 +1,6 @@
+{
+  "name": "OpenExonautClient",
+  "version": "1.0.0",
+  "main": "main.js",
+  "mainURL": "http://192.168.207.1/"
+}

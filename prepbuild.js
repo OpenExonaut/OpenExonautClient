@@ -83,19 +83,6 @@ switch (process.argv[2]) {
         break;
 }
 
-const packagePath = path.join(__dirname, "OpenExonautClient");
-
-fs.rmSync(packagePath, { recursive: true, force: true });
-fs.mkdirSync(packagePath);
-fs.copyFileSync(
-    path.join(__dirname, "gecko.json"),
-    path.join(packagePath, "package.json")
-);
-fs.copyFileSync(
-    path.join(__dirname, "index.js"),
-    path.join(packagePath, "index.js")
-);
-
 /*
 const builder = require("electron-builder");
 

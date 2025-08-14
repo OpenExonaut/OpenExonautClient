@@ -4,12 +4,12 @@
     "description": "OpenExonautClient",
     "main": "index.js",
     "scripts": {
-        "start-win": "node prepbuild.js win && npx qbrt run OpenExonautClient",
-        "start-mac": "node prepbuild.js mac && npx qbrt run OpenExonautClient",
-        "pack-win": "node prepbuild.js win && npx qbrt package OpenExonautClient && node postbuild.js win",
-        "dist-win": "node prepbuild.js win && npx qbrt package OpenExonautClient && node postbuild.js win",
-        "pack-mac": "node prepbuild.js mac && npx qbrt package OpenExonautClient && node postbuild.js mac",
-        "dist-mac": "node prepbuild.js mac && npx qbrt package OpenExonautClient && node postbuild.js mac",
+        "start-win": "node prepbuild.js win && npx qbrt run webapp",
+        "start-mac": "node prepbuild.js mac && npx qbrt run webapp",
+        "pack-win": "node prepbuild.js win && npx qbrt package webapp && node postbuild.js win",
+        "dist-win": "node prepbuild.js win && npx qbrt package webapp && node postbuild.js win",
+        "pack-mac": "node prepbuild.js mac && npx qbrt package webapp && node postbuild.js mac",
+        "dist-mac": "node prepbuild.js mac && npx qbrt package webapp && node postbuild.js mac",
         "prettier": "npx prettier --write ."
     },
     "author": "OpenExonaut Contributors",
