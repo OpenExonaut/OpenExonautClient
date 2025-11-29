@@ -9,14 +9,14 @@ fs.mkdirSync(distDir, { recursive: true });
 switch (process.argv[2]) {
     case "mac":
         fs.renameSync(
-            path.join(__dirname, "OpenExonautClient.v1.0.0.dmg"),
-            path.join(distDir, "OpenExonautClient-MacOS-1.0.0.dmg")
+            path.join(__dirname, "OpenExonautClient.v0.9.0.zip"),
+            path.join(distDir, "OpenExonautClient-MacOS-Portable-0.9.0.zip")
         );
         break;
     case "win":
         fs.renameSync(
-            path.join(__dirname, "OpenExonautClient.v1.0.0.zip"),
-            path.join(distDir, "OpenExonautClient-Windows-Portable-1.0.0.zip")
+            path.join(__dirname, "OpenExonautClient.v0.9.0.zip"),
+            path.join(distDir, "OpenExonautClient-Windows-Portable-0.9.0.zip")
         );
         break;
 }
