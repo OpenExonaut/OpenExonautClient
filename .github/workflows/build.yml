@@ -22,6 +22,21 @@ jobs:
       run: npm install
     - name: Pack into zip and create installer
       run: npm run dist-win
+    - name: Unpack zip
+      run: |
+        md dist\win
+        tar -xf dist\OpenExonautClient-Windows-Portable-0.9.0.zip -C dist\win
+    - name: Install NSIS
+      run: |
+        Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+        scoop bucket add extras
+        scoop install nsis
+    - name: Create NSIS installer
+      run: |
+        cp build\icon.ico dist\win\OpenExonautClient\
+        makensis installer.nsi
+    - name: Remove intermediate files
+      run: rd -r dist\win
     - name: Upload Artifacts
       uses: actions/upload-artifact@master
       with:
@@ -42,7 +57,14 @@ jobs:
     - name: Pack into zip and create installer
       run: npm run pack-mac
     - name: Unpack zip
-      run: mkdir -p dist/mac && tar -xf dist/OpenExonautClient-MacOS-Portable-0.9.0.zip -C dist/mac
+      run: |
+        mkdir -p dist/mac
+        tar -xf dist/OpenExonautClient-MacOS-Portable-0.9.0.zip -C dist/mac
+    - name: Copy branding files
+      run: |
+        cp build/icon.icns dist/mac/OpenExonautClient.app/Contents/Resources/
+        cp build/Info.plist dist/mac/OpenExonautClient.app/Contents/
+        rm -rf dist/mac/OpenExonautClient.app/Contents/Resources/en.lproj
     - name: Install create-dmg
       run: brew install create-dmg
     - name: Create .dmg file
@@ -54,7 +76,7 @@ jobs:
         --add-file "MacOS Instructions.rtf" "build/MacOS Instructions.rtf" 330 260 \
         --background build/dmg_bg.png dist/OpenExonautClient-MacOS-Installer-0.9.0.dmg dist/mac
     - name: Remove intermediate files
-      run: rm -rf dist/mac
+      run: rm -rf dist/mac dist/OpenExonautClient-MacOS-Portable-0.9.0.zip
     - name: Upload Artifacts
       uses: actions/upload-artifact@master
       with:
