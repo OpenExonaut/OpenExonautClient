@@ -1,9 +1,16 @@
 'use strict';
 
+Components.utils.import("resource://gre/modules/Services.jsm");
+
 window.addEventListener('load', () => {
   const browser = document.getElementById('content');
 
   browser.focus();
+
+  if (parseFloat(Components.classes['@mozilla.org/system-info;1'].getService(Components.interfaces.nsIPropertyBag2).getProperty('version')) >= 16.0) {
+    window.openDialog('chrome://app/content/warning.xul', '_blank', 'chrome,titlebar,dialog=yes');
+  }
+
   browser.loadURI(window.arguments[0], null, null);
 
   // tailored to the OpenExonaut page, do this to all external links

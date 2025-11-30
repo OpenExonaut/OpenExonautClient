@@ -74,7 +74,7 @@ jobs:
         --icon-size 100 --icon OpenExonautClient.app 160 100 \
         --app-drop-link 500 100 \
         --add-file "MacOS Instructions.rtf" "build/MacOS Instructions.rtf" 330 260 \
-        --background build/dmg_bg.png dist/OpenExonautClient-MacOS-Installer-0.9.0.dmg dist/mac
+        --background build/dmg_bg.tiff dist/OpenExonautClient-MacOS-Installer-0.9.0.dmg dist/mac
     - name: Remove intermediate files
       run: rm -rf dist/mac dist/OpenExonautClient-MacOS-Portable-0.9.0.zip
     - name: Upload Artifacts
