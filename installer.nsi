@@ -3,7 +3,7 @@
 
 !define NAME "OpenExonautClient"
 !define APPFILE "OpenExonautClient.bat"
-!define VERSION "0.9.0"
+!define VERSION "0.9.1"
 !define SLUG "${NAME} ${VERSION}"
 
 Name "${NAME}"

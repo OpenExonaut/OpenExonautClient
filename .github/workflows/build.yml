@@ -25,7 +25,7 @@ jobs:
     - name: Unpack zip
       run: |
         md dist\win
-        tar -xf dist\OpenExonautClient-Windows-Portable-0.9.0.zip -C dist\win
+        tar -xf dist\OpenExonautClient-Windows-Portable-0.9.1.zip -C dist\win
     - name: Install NSIS
       run: |
         Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
@@ -59,7 +59,7 @@ jobs:
     - name: Unpack zip
       run: |
         mkdir -p dist/mac
-        tar -xf dist/OpenExonautClient-MacOS-Portable-0.9.0.zip -C dist/mac
+        tar -xf dist/OpenExonautClient-MacOS-Portable-0.9.1.zip -C dist/mac
     - name: Copy branding files
       run: |
         cp build/icon.icns dist/mac/OpenExonautClient.app/Contents/Resources/
@@ -74,9 +74,9 @@ jobs:
         --icon-size 100 --icon OpenExonautClient.app 160 100 \
         --app-drop-link 500 100 \
         --add-file "MacOS Instructions.rtf" "build/MacOS Instructions.rtf" 330 260 \
-        --background build/dmg_bg.tiff dist/OpenExonautClient-MacOS-Installer-0.9.0.dmg dist/mac
+        --background build/dmg_bg.tiff dist/OpenExonautClient-MacOS-Installer-0.9.1.dmg dist/mac
     - name: Remove intermediate files
-      run: rm -rf dist/mac dist/OpenExonautClient-MacOS-Portable-0.9.0.zip
+      run: rm -rf dist/mac dist/OpenExonautClient-MacOS-Portable-0.9.1.zip
     - name: Upload Artifacts
       uses: actions/upload-artifact@master
       with:
