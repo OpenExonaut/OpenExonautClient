@@ -43,7 +43,7 @@ jobs:
         name: artifact-win
         path: dist
   mac-build:
-    runs-on: macos-13
+    runs-on: macos-15
 
     steps:
     - uses: actions/checkout@v3
